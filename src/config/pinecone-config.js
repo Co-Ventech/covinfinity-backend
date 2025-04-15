@@ -1,32 +1,54 @@
-// pinecone-config.js
-const { OpenAI } = require("openai");
 const { Pinecone } = require("@pinecone-database/pinecone");
-const { readExcel } = require("../util/read-excel");
 const { config } = require("dotenv");
+const { readExcel } = require("../util/read-excel");
+const getEmbedding = require("../util/openai-embedding");
 config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const pc = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY
+});
 
-const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
-const index = pc.index(process.env.INDEXNAME);
+const indexName = process.env.INDEXNAME;
 
-const getEmbedding = async (text) => {
-    const res = await openai.embeddings.create({
-        input: text,
-        model: "text-embedding-ada-002"
-    });
-    return res.data[0].embedding;
-};
+const findIndex = async () => {
+    return (await pc.listIndexes()).indexes.find(i => i.name === indexName);
+}
 
 const configurePinecone = async () => {
-    const excelData = readExcel("covinfinity-dataset.xlsx");
+    let index = null;
 
-    const formattedRecords = await Promise.all(
-        excelData.map(async (row, i) => {
+    if (!await findIndex()) {
+        console.log('index not found')
+        pc.createIndex({
+            name: indexName,
+            dimension: 1536, // Replace with your model dimensions
+            metric: 'cosine', // Replace with your model metric
+            spec: {
+                serverless: {
+                    cloud: 'aws',
+                    region: 'us-east-1'
+                }
+            },
+        })
+        return await insertRecords();
+        
+    } else {
+        index = pc.index(indexName);
+        return await insertRecords()
+    }
+
+}
+
+const insertRecords = async() => {
+    const index = pc.index(indexName)
+    const excel_data = readExcel('covinfinity-dataset.xlsx')
+    // Resolve all promises from async map
+    const vectors = await Promise.all(
+        excel_data.map(async (row, i) => {
             const embedding = await getEmbedding(row.Message);
             return {
-                id: String(i), // required as string
-                values: embedding,
+                id: i.toString(), // required by Pinecone
+                values: embedding, // must be under 'values'
                 metadata: {
                     conversationId: row.ConversationID,
                     role: row.Role,
@@ -36,9 +58,12 @@ const configurePinecone = async () => {
             };
         })
     );
+    await index.upsertRecords(vectors);
+    return {
+        status: 200,
+        message: 'inserted records successfully'
+    }
+    //await index?.upsertRecords(excel_data)
+}
 
-    await index.upsertRecords(formattedRecords);
-    console.log("Uploaded to Pinecone!");
-};
-
-module.exports = { configurePinecone };
+module.exports = { configurePinecone }

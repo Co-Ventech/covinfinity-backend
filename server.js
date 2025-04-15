@@ -1,5 +1,5 @@
 const express = require("express");
-const { chat } = require("./src/controller/chat-controller");
+const { chat } = require("./src/controller/chat.controller");
 
 const app= express();
 
