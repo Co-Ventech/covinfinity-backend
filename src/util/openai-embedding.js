@@ -5,12 +5,14 @@ config();
 
 const openai= new OpenAI({apiKey: process.env.OPENAI_API_KEY})
 
-const getEmbedding= async(text)=>{
+const getEmbeddings= async(data)=>{
+    const messages = data.map((d) => d.Message);
+
     const res= await openai.embeddings.create({
-        input: text,
+        input: messages,
         model:'text-embedding-ada-002'
     });
     return res.data[0].embedding;
 }
 
-module.exports= getEmbedding;
+module.exports= getEmbeddings;

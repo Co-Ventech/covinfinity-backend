@@ -1,7 +1,7 @@
 const { Pinecone } = require("@pinecone-database/pinecone");
 const { config } = require("dotenv");
 const { readExcel } = require("../util/read-excel");
-const getEmbedding = require("../util/openai-embedding");
+const getEmbeddings = require("../util/openai-embedding");
 config();
 
 const pc = new Pinecone({
@@ -19,9 +19,10 @@ const configurePinecone = async () => {
 
     if (!await findIndex()) {
         console.log('index not found')
-        pc.createIndex({
+        await pc.createIndex({
             name: indexName,
             dimension: 1536, // Replace with your model dimensions
+            vectorType:'',
             metric: 'cosine', // Replace with your model metric
             spec: {
                 serverless: {
@@ -40,25 +41,22 @@ const configurePinecone = async () => {
 }
 
 const insertRecords = async() => {
-    const index = pc.index(indexName)
+    const index = pc.Index(indexName)
     const excel_data = readExcel('covinfinity-dataset.xlsx')
     // Resolve all promises from async map
-    const vectors = await Promise.all(
-        excel_data.map(async (row, i) => {
-            const embedding = await getEmbedding(row.Message);
-            return {
-                id: i.toString(), // required by Pinecone
-                values: embedding, // must be under 'values'
-                metadata: {
-                    conversationId: row.ConversationID,
-                    role: row.Role,
-                    topic: row.Topic,
-                    message: row.Message
-                }
-            };
-        })
-    );
-    await index.upsertRecords(vectors);
+    const embeddings = await getEmbeddings(excel_data);
+    const vectors = excel_data.map((d, i) => ({
+        id: `${d.id}-${d.Role}`, // make unique ID (since IDs are repeating)
+        values: embeddings,
+        metadata: {
+          text: d.Message,
+          role: d.Role,
+          topic: d.Topic,
+        },
+      }));
+    await index.upsert(vectors, 'ns1');
+
+    //await index.namespace('ns1').upsertRecords(vectors);
     return {
         status: 200,
         message: 'inserted records successfully'
