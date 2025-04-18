@@ -22,7 +22,6 @@ const configurePinecone = async () => {
         await pc.createIndex({
             name: indexName,
             dimension: 1536, // Replace with your model dimensions
-            vectorType:'',
             metric: 'cosine', // Replace with your model metric
             spec: {
                 serverless: {
@@ -31,13 +30,15 @@ const configurePinecone = async () => {
                 }
             },
         })
-        return await insertRecords();
+        console.log(insertRecords())
+        //return await insertRecords();
         
     } else {
         index = pc.index(indexName);
-        return await insertRecords()
+        //await insertRecords()
     }
 
+    return index;
 }
 
 const insertRecords = async() => {
@@ -45,9 +46,10 @@ const insertRecords = async() => {
     const excel_data = readExcel('covinfinity-dataset.xlsx')
     // Resolve all promises from async map
     const embeddings = await getEmbeddings(excel_data);
-    const vectors = excel_data.map((d, i) => ({
+    console.log(embeddings)
+    const vectors = excel_data.map((d,i) => ({
         id: `${d.id}-${d.Role}`, // make unique ID (since IDs are repeating)
-        values: embeddings,
+        values: embeddings[i],
         metadata: {
           text: d.Message,
           role: d.Role,
@@ -57,10 +59,10 @@ const insertRecords = async() => {
     await index.upsert(vectors, 'ns1');
 
     //await index.namespace('ns1').upsertRecords(vectors);
-    return {
+    console.log({
         status: 200,
         message: 'inserted records successfully'
-    }
+    })
     //await index?.upsertRecords(excel_data)
 }
 

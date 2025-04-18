@@ -12,7 +12,7 @@ const getEmbeddings= async(data)=>{
         input: messages,
         model:'text-embedding-ada-002'
     });
-    return res.data[0].embedding;
+    return res.data.map((item) => item.embedding);
 }
 
 module.exports= getEmbeddings;
