@@ -1,7 +1,8 @@
 const { Pinecone } = require("@pinecone-database/pinecone");
 const { config } = require("dotenv");
-const { readExcel } = require("../util/read-excel");
-const getEmbeddings = require("../util/openai-embedding");
+const embedText = require("../util/openai-embedding");
+const path = require('path');
+
 config();
 
 const pinecone = new Pinecone({
@@ -11,15 +12,34 @@ const pinecone = new Pinecone({
 const indexName = process.env.PINECONE_INDEX;
 
 const findIndex = async () => {
-    return (await pc.listIndexes()).indexes.find(i => i.name === indexName);
+    return (await pinecone.listIndexes()).indexes.find(i => i.name === indexName);
 }
+
+// 1. Split text into chunks
+function splitText(text, chunkSize = 1000) {
+    const paragraphs = text.split('\n').filter(Boolean);
+    const chunks = [];
+
+    let chunk = '';
+    for (let para of paragraphs) {
+        if ((chunk + para).length > chunkSize) {
+            chunks.push(chunk.trim());
+            chunk = '';
+        }
+        chunk += para + '\n';
+    }
+    if (chunk) chunks.push(chunk.trim());
+
+    return chunks;
+}
+
 
 const configurePinecone = async () => {
     let index = null;
 
     if (!await findIndex()) {
         console.log('index not found')
-        await pc.createIndex({
+        await pinecone.createIndex({
             name: indexName,
             dimension: 1536, // Replace with your model dimensions
             metric: 'cosine', // Replace with your model metric
@@ -30,11 +50,16 @@ const configurePinecone = async () => {
                 }
             },
         })
-        console.log(insertRecords())
+        const filePath = path.join('coventech-info.txt');
+        const rawText = fs.readFileSync(filePath, 'utf-8');
+        console.log(rawText)
+
+        const chunks = splitText(rawText);
+        await uploadChunks(chunks);
         //return await insertRecords();
-        
+
     } else {
-        index = pc.index(indexName);
+        index = pinecone.index(indexName);
         //await insertRecords()
     }
 
@@ -44,40 +69,30 @@ const configurePinecone = async () => {
 async function uploadChunks(chunks) {
     const index = pinecone.Index(indexName);
     const vectors = await Promise.all(
-      chunks.map(async (chunk, i) => ({
-        id: `co-ventech-${i}`,
-        values: await embedText(chunk),
-        metadata: { text: chunk },
-      }))
+        chunks.map(async (chunk, i) => ({
+            id: `co-ventech-${i}`,
+            values: await embedText(chunk),
+            metadata: { text: chunk },
+        }))
     );
-  
-    await index.upsert(vectors,'ns1');
-    console.log(`Uploaded ${vectors.length} vectors to Pinecone`);
-  }
 
-const insertRecords = async() => {
-    const index = pc.Index(indexName)
-    const excel_data = readExcel('rag-dataset.xlsx')
-    // Resolve all promises from async map
-    const embeddings = await getEmbeddings(excel_data);
-    console.log(embeddings)
-    const vectors = excel_data.map((d,i) => ({
-        id: `${d.id}-${d.Role}`, // make unique ID (since IDs are repeating)
-        values: embeddings[i],
-        metadata: {
-          message: d.message,
-          client_reply: d.client_reply,
-          topic: d.topic,
-        },
-      }));
     await index.upsert(vectors, 'ns1');
-
-    //await index.namespace('ns1').upsertRecords(vectors);
-    console.log({
-        status: 200,
-        message: 'inserted records successfully'
-    })
-    //await index?.upsertRecords(excel_data)
+    console.log(`Uploaded ${vectors.length} vectors to Pinecone`);
 }
 
-module.exports = { configurePinecone }
+// Query Pinecone with user input
+async function queryPinecone(query) {
+    const index = await configurePinecone();
+    const queryEmbedding = await embedText(query);
+
+    const results = await index.query({
+        vector: queryEmbedding,
+        topK: 3,
+        includeMetadata: true,
+    });
+
+    return results.matches.map(match => match.metadata.text).join('\n');
+}
+
+
+module.exports = { configurePinecone, queryPinecone }

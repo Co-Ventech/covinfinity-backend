@@ -3,16 +3,15 @@ const { default: OpenAI } = require("openai")
 
 config();
 
-const openai= new OpenAI({apiKey: process.env.OPENAI_API_KEY})
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-const getEmbeddings= async(data)=>{
-    const messages = data.map((d) => d.message);
-
-    const res= await openai.embeddings.create({
-        input: data,
-        model:'text-embedding-ada-002'
+// 2. Create OpenAI embedding
+async function embedText(text) {
+    const res = await openai.embeddings.create({
+        model: 'text-embedding-ada-002',
+        input: text,
     });
-    return res.data.map((item) => item.embedding);
+    return res.data[0].embedding;
 }
 
-module.exports= getEmbeddings;
+module.exports = embedText;
