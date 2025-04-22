@@ -4,11 +4,11 @@ const { readExcel } = require("../util/read-excel");
 const getEmbeddings = require("../util/openai-embedding");
 config();
 
-const pc = new Pinecone({
+const pinecone = new Pinecone({
     apiKey: process.env.PINECONE_API_KEY
 });
 
-const indexName = process.env.INDEXNAME;
+const indexName = process.env.PINECONE_INDEX;
 
 const findIndex = async () => {
     return (await pc.listIndexes()).indexes.find(i => i.name === indexName);
@@ -41,9 +41,23 @@ const configurePinecone = async () => {
     return index;
 }
 
+async function uploadChunks(chunks) {
+    const index = pinecone.Index(indexName);
+    const vectors = await Promise.all(
+      chunks.map(async (chunk, i) => ({
+        id: `co-ventech-${i}`,
+        values: await embedText(chunk),
+        metadata: { text: chunk },
+      }))
+    );
+  
+    await index.upsert(vectors,'ns1');
+    console.log(`Uploaded ${vectors.length} vectors to Pinecone`);
+  }
+
 const insertRecords = async() => {
     const index = pc.Index(indexName)
-    const excel_data = readExcel('covinfinity-dataset.xlsx')
+    const excel_data = readExcel('rag-dataset.xlsx')
     // Resolve all promises from async map
     const embeddings = await getEmbeddings(excel_data);
     console.log(embeddings)
@@ -51,9 +65,9 @@ const insertRecords = async() => {
         id: `${d.id}-${d.Role}`, // make unique ID (since IDs are repeating)
         values: embeddings[i],
         metadata: {
-          text: d.Message,
-          role: d.Role,
-          topic: d.Topic,
+          message: d.message,
+          client_reply: d.client_reply,
+          topic: d.topic,
         },
       }));
     await index.upsert(vectors, 'ns1');

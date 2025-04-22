@@ -1,19 +1,16 @@
-const openai = require("../config/openai-api");
+const { model } = require('./openai-embedding');
 
-const generateAnswer = async (context, question) => {
-    const systemPrompt = `You are a helpful assistant. Use the context to answer the question.`;
+const generateAnswer = async (question, context) => {
+  const prompt = `
+The customer said: "${context}"
+Based on the question: "${question}", generate a possible answer the customer might give.
+`;
 
-    const userPrompt = `Context:\n${context.join('\n')}\n\nQuestion: ${question}`;
+  const response = await model.call([
+    { role: 'user', content: prompt }
+  ]);
 
-    const res = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ]
-    });
-
-    return res.choices[0].message.content;
+  return response.content.trim();
 };
 
 module.exports = generateAnswer;

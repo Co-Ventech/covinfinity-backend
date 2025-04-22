@@ -1,21 +1,40 @@
+const openai = require("../config/openai-api");
 const { configurePinecone } = require("../config/pinecone-config");
-const generateAnswer = require("../util/prompt-helper");
-const { vectorSearch } = require("../util/vector-search");
+const { embedConversation } = require("../embeddings/embedder");
+//const { model } = require("../util/openai-embedding");
 
-const chatService= async(req)=>{
-    const userQuestion = `Hi there,
-I came across your company, Co-Ventech, and was really impressed with the kind of work you do. I'm currently planning to develop a custom web application for my business to manage client bookings and automate some internal processes. I’m not too technical, so I’m looking for a team who can guide me through the process from start to finish.
-Would love to understand how you usually work, what your typical timelines and pricing look like, and whether we could hop on a quick call to discuss things further.
-Looking forward to hearing from you!
-Best,
-Ryan M.`;
-    const index= await configurePinecone()
-    const contextRecords = await vectorSearch(index,userQuestion);
-    console.log(contextRecords)
-    //const contextMessages = contextRecords.map(r => r.text);
+const chatService = async (req,res) => {
+    const userConversation = req?.body?.conversation;
+    const index= await configurePinecone();
+    const vector= await embedConversation(userConversation);
+
+    const queryResponse = await index.query({
+        topK: 3,
+        vector,
+        includeMetadata: true,
+    });
+
+    const retrievedConvos = queryResponse.matches.map(m => m.metadata);
+
+    const prompt = `
+    You are a form assistant AI.
+    Based on the user's answers:
+    ${JSON.stringify(userConversation)}
     
-    const answer = await generateAnswer(contextRecords, userQuestion);
-    return answer;
-}
+    Here are some past conversations:
+    ${JSON.stringify(retrievedConvos)}
+    
+    What is the best next question to ask the user?
+    Only return the question.
+    `;
 
-module.exports= chatService;
+    const chatResponse = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+    });
+
+    const nextQuestion = chatResponse.choices[0].message.content.trim();
+    return {nextQuestion}
+};
+
+module.exports = chatService;
