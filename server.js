@@ -33,6 +33,12 @@ wss.on('connection', ws => {
     };
 });
 
+app.get('/',(req,res)=>{
+    res.send({
+        message:"helloo"
+    })
+})
+
 //app.post('/chat', chat)
 
 
