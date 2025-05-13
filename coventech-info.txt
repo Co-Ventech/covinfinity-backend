@@ -1,125 +1,107 @@
+
 About Co-Ventech
 
-Co-Ventech is a leading software development company specializing in SaaS-based solutions 
-that transform business visions into digital realities. Since our inception in 2019, we've partnered 
-with over 50 global clients, completing more than 200 projects with a 95% client retention rate. 
-Our mission is to empower businesses by integrating advanced SaaS platforms, fortified 
-cybersecurity measures, and seamless software quality assurance practices.
+Co-Ventech Chatbot Training Document
+
+About Co-Ventech
+
+Co-Ventech is a leading software development company specializing in SaaS-based solutions that transform business visions into digital realities. Since our inception in 2019, we've partnered with over 50 global clients, completing more than 200 projects with a 95% client retention rate. Our mission is to empower businesses by integrating advanced SaaS platforms, fortified cybersecurity measures, and seamless software quality assurance practices.
 
 Our Products
 
 1. Recruitinn – AI-Powered Recruitment Platform
-
-Recruitinn revolutionizes the hiring process with AI-driven solutions. It enables businesses to 
-discover, assess, and onboard top talent efficiently. Key features include:
-
-● AI-based candidate screening
-● Automated interview scheduling
-● Real-time analytics and reporting
-● Seamless integration with existing HR systems
-
-Website: app.recruitinn.ai
+Recruitinn revolutionizes the hiring process with AI-driven solutions. It enables businesses to discover, assess, and onboard top talent efficiently. Key features include:
+- AI-based candidate screening
+- Automated interview scheduling
+- Real-time analytics and reporting
+- Seamless integration with existing HR systems
+Website: https://app.recruitinn.ai/
 
 2. SkillBuilder – Comprehensive Learning & Career Development Platform
-
 SkillBuilder offers a holistic approach to professional development, providing:
-
-● Curated courses across various domains
-● Recorded sessions for flexible learning
-● Live sessions with industry experts
-● AI-based career counseling to guide career paths
-
-Website: app.skillbuilder.online
+- Curated courses across various domains
+- Recorded sessions for flexible learning
+- Live sessions with industry experts
+- AI-based career counseling to guide career paths
+Website: https://app.skillbuilder.online/
 
 3. Co-Vental – AI-Driven Staff Augmentation Platform
-
 Co-Vental streamlines the process of connecting businesses with top-tier freelancers through:
-
-● AI-based initial interviews to assess technical skills
-● Subsequent human interviews for comprehensive evaluation
-● Inclusion in a vetted talent pool
-● Client interviews to ensure the perfect match
-
-https://app.co-ventech.com/login
-https://app.recruitinn.ai/
-https://app.skillbuilder.online
+- AI-based initial interviews to assess technical skills
+- Subsequent human interviews for comprehensive evaluation
+- Inclusion in a vetted talent pool
+- Client interviews to ensure the perfect match
 
 Our Services
 
 Software Development
-
 We craft custom software solutions tailored to your business needs, including:
-
-● Custom Software Development
-● App Development
-● Enterprise Application Solutions
-● Cloud-based Software
-● Digital Transformation Services
+- Custom Software Development
+- App Development
+- Enterprise Application Solutions
+- Cloud-based Software
+- Digital Transformation Services
 
 QA & Test Automation
-
 Ensuring the quality and reliability of your software through:
-
-● Functional Testing
-● Automated Testing
-● Security Testing
-● Performance Testing
-● Continuous Testing in CI/CD pipelines
+- Functional Testing
+- Automated Testing
+- Security Testing
+- Performance Testing
+- Continuous Testing in CI/CD pipelines
 
 UI/UX Designing
-
 Creating intuitive and engaging user experiences with services like:
-
-● UX Design
-● User Interface Design
-● Prototyping
-● Responsive Design
-● User-Centered Design
+- UX Design
+- User Interface Design
+- Prototyping
+- Responsive Design
+- User-Centered Design
 
 DevOps
-
 Optimizing your development processes through:
-
-● Process Automation
-● CI/CD Pipeline Implementation
-● Cloud DevOps Solutions
-● Serverless Architecture
-● Scalable Infrastructure
+- Process Automation
+- CI/CD Pipeline Implementation
+- Cloud DevOps Solutions
+- Serverless Architecture
+- Scalable Infrastructure
 
 Cybersecurity
-
 Protecting your digital assets with services such as:
-
-● Threat Detection
-● Penetration Testing
-● Vulnerability Assessment
-● Security Audits
-● Incident Response
+- Threat Detection
+- Penetration Testing
+- Vulnerability Assessment
+- Security Audits
+- Incident Response
 
 Chatbot Interaction Prompts
 
 Greetings
-
-● "Hello! How can I assist you today?"
-● "Hi there! Looking to develop a new project or explore our services?"
-● "Welcome to Co-Ventech! Feel free to ask about our products or services."
+- "Hello! How can I assist you today?"
+- "Hi there! Looking to develop a new project or explore our services?"
+- "Welcome to Co-Ventech! Feel free to ask about our products or services."
 
 Project Idea Intake
-
-● "I'd love to hear about your project idea! Could you share some details?"
-● "Thinking of building something new? Tell me more about it!"
+- "I'd love to hear about your project idea! Could you share some details?"
+- "Thinking of building something new? Tell me more about it!"
 
 Service Inquiries
-
-● "Interested in our software development services? Here's what we offer..."
-● "Looking for QA & Test Automation solutions? Let me provide more details."
+- "Interested in our software development services? Here's what we offer..."
+- "Looking for QA & Test Automation solutions? Let me provide more details."
 
 Product Information
-
-● "Want to know more about Recruitinn? It's our AI-powered recruitment platform."
-● "Curious about SkillBuilder? It's designed for comprehensive learning and career development."
+- "Want to know more about Recruitinn? It's our AI-powered recruitment platform."
+- "Curious about SkillBuilder? It's designed for comprehensive learning and career development."
+- "Interested in Co-Vental? It's our staff augmentation platform that ensures talent quality through AI and human evaluations."
 
 Project Estimations
+- "To provide an accurate estimate, could you share the project scope and desired features?"
+- "Based on similar projects, a basic MVP might take around 4–6 weeks. Let's discuss further."
 
-● "To provide an accurate estimate, could you share the project scope and desired features?"
-● "Based on similar projects, a basic MVP might take around 4–6 weeks. Let's discuss further."
+Meeting Requests
+- "Would you like to schedule a meeting with Co-Ventech to discuss your needs in detail? You can book a time here: https://calendly.com/syedzubair/meet-with-zubair-co-ventech"
+- "For a more in-depth discussion, feel free to reach out to us at info@co-ventech.com"
+- "Before we proceed further, may I have your email address so we can continue our discussion?"
+
+Handling Irrelevant Queries
+- "Co-Ventech is a software company. I can assist you with any questions related to our products, services, or development projects. Let me know how I can help in that domain."

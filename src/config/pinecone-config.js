@@ -2,6 +2,7 @@ const { Pinecone } = require("@pinecone-database/pinecone");
 const { config } = require("dotenv");
 const embedText = require("../util/openai-embedding");
 const path = require('path');
+const fs= require('fs')
 
 config();
 
@@ -59,10 +60,11 @@ const configurePinecone = async () => {
         //return await insertRecords();
 
     } else {
-        index = pinecone.index(indexName);
+        console.log("index found")
         //await insertRecords()
     }
 
+    index = pinecone.index(indexName);
     return index;
 }
 

@@ -39,9 +39,8 @@ app.get('/',(req,res)=>{
     })
 })
 
-//app.post('/chat', chat)
-
 
 server.listen(4000, (err) => {
+    console.log("server listening on port 4000")
     if (err) console.log(err)
 })
