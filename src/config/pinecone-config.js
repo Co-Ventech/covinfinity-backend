@@ -2,7 +2,7 @@ const { Pinecone } = require("@pinecone-database/pinecone");
 const { config } = require("dotenv");
 const embedText = require("../util/openai-embedding");
 const path = require('path');
-const fs= require('fs')
+const fs = require('fs')
 
 config();
 
@@ -59,10 +59,16 @@ const configurePinecone = async () => {
         await uploadChunks(chunks);
         //return await insertRecords();
 
-    } else {
-        console.log("index found")
-        //await insertRecords()
     }
+
+    console.log("index found")
+    //await insertRecords()
+    // const filePath = path.join('coventech-info.txt');
+    // const rawText = fs.readFileSync(filePath, 'utf-8');
+    // console.log(rawText)
+
+    // const chunks = splitText(rawText);
+    // await uploadChunks(chunks);
 
     index = pinecone.index(indexName);
     return index;

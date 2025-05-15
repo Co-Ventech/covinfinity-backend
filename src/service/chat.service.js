@@ -9,7 +9,7 @@ const chatService = async (message) => {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
-      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'system', content: 'You are a co-ventech AI agent who will answer company related questions.' },
       { role: 'user', content: `${message}\n\nContext: ${context}` },
     ],
   });
