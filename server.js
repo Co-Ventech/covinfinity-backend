@@ -3,6 +3,8 @@ const { chat } = require("./src/controller/chat.controller");
 const bodyParser = require("body-parser");
 const http = require('http');
 const WebSocket = require('ws');
+const { validateSendEmail } = require("./src/schema/email.schema");
+const { sendEmailController } = require("./src/controller/email.controller");
 
 const app = express();
 app.use(bodyParser.json());
@@ -37,7 +39,10 @@ app.get('/',(req,res)=>{
     res.send({
         message:"helloo"
     })
-})
+});
+
+app.post("/send-email", validateSendEmail, sendEmailController);
+
 
 
 server.listen(4000, (err) => {
