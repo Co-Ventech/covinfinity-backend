@@ -5,6 +5,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const { validateSendEmail } = require("./src/schema/email.schema");
 const { sendEmailController } = require("./src/controller/email.controller");
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
