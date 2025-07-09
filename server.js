@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+app.use(cors()); // This enables CORS for all origins and all routes
+
 wss.on('connection', ws => {
     console.log('Client connected');
     //ws.send("Connected to the server")
@@ -42,8 +44,6 @@ app.get('/',(req,res)=>{
 });
 
 app.post("/send-email", validateSendEmail, sendEmailController);
-
-
 
 server.listen(4000, (err) => {
     console.log("server listening on port 4000")
