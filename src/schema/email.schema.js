@@ -7,8 +7,9 @@ const validateSendEmail= (req,res,next)=>{
             status: 400,
             message: error.message
         });
+    }else{
+        next();
     }
-    next()
 }
 
 module.exports={validateSendEmail}
