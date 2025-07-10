@@ -38,13 +38,13 @@ wss.on('connection', ws => {
     };
 });
 
-app.get('/',(req,res)=>{
+app.get('/v1',(req,res)=>{
     res.send({
         message:"helloo"
     })
 });
 
-app.post("/send-email", validateSendEmail, sendEmailController);
+app.post("/v1/send-email", validateSendEmail, sendEmailController);
 
 server.listen(4000, (err) => {
     console.log("server listening on port 4000")
