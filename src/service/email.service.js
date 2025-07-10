@@ -40,6 +40,7 @@ const sendEmailService = async (body) => {
             message: "Your message has been sent successfully"
         }
     } catch (e) {
+        console.log(e)
         return {
             status: 500,
             message: e.message
